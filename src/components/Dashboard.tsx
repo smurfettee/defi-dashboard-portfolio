@@ -5,6 +5,7 @@ import { usePortfolio } from '../hooks/usePortfolio';
 import PortfolioSummary from './PortfolioSummary';
 import TokenList from './TokenList';
 import TestnetInfo from './TestnetInfo';
+import TransactionHistory from './TransactionHistory';
 
 const Dashboard: React.FC = () => {
   const { isConnected, address } = useWallet();
@@ -97,6 +98,9 @@ const Dashboard: React.FC = () => {
         totalValue={portfolio.totalValue}
         loading={portfolio.loading}
       />
+
+      {/* Transaction History */}
+      <TransactionHistory />
     </div>
   );
 };

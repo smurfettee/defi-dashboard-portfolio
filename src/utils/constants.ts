@@ -4,7 +4,7 @@ export const SUPPORTED_NETWORKS = {
     id: 1,
     name: 'Ethereum Mainnet',
     chainId: '0x1',
-    rpcUrl: 'https://eth.llamarpc.com',
+    rpcUrl: 'https://ethereum.publicnode.com',
     explorer: 'https://etherscan.io',
     nativeCurrency: {
       name: 'Ether',

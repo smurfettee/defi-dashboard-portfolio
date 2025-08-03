@@ -20,7 +20,10 @@ export const createPublicClientForNetwork = (networkKey: keyof typeof SUPPORTED_
 
   return createPublicClient({
     chain,
-    transport: http(network.rpcUrl),
+    transport: http(network.rpcUrl, {
+      timeout: 10000, // 10 second timeout
+      retryCount: 2,  // Retry failed requests
+    }),
   });
 };
 
