@@ -107,7 +107,7 @@ const getEthTransactions = async (
         if (block && block.transactions) {
           for (const tx of block.transactions) {
             if (typeof tx === 'object' && 
-                (tx.from.toLowerCase() === address.toLowerCase() || 
+                (tx.from.toLowerCase() === address.toLowerCase() || //from address
                  tx.to?.toLowerCase() === address.toLowerCase())) {
               
               try {
