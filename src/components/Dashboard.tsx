@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Wallet, AlertCircle, Coins, History, TrendingUp } from 'lucide-react';
+import { Wallet, AlertCircle, Coins, History, TrendingUp, Shield, FileText, Activity } from 'lucide-react';
 import { useWallet } from '../contexts/WalletContext';
 import { usePortfolio } from '../hooks/usePortfolio';
 import PortfolioSummary from './PortfolioSummary';
@@ -7,9 +7,12 @@ import TokenList from './TokenList';
 import TestnetInfo from './TestnetInfo';
 import TransactionHistory from './TransactionHistory';
 import { AnalyticsOverview } from './analytics';
+import { DeFiProtocols } from './DeFiProtocols';
+import { TaxReporting } from './TaxReporting';
+import { RiskAssessment } from './RiskAssessment';
 import clsx from 'clsx';
 
-type DashboardTab = 'overview' | 'analytics' | 'transactions';
+type DashboardTab = 'overview' | 'analytics' | 'transactions' | 'defi' | 'tax' | 'risk';
 
 const Dashboard: React.FC = () => {
   const { isConnected, address } = useWallet();
@@ -19,7 +22,10 @@ const Dashboard: React.FC = () => {
   const tabs = [
     { id: 'overview' as DashboardTab, label: 'Overview', icon: Coins },
     { id: 'analytics' as DashboardTab, label: 'Analytics', icon: TrendingUp },
-    { id: 'transactions' as DashboardTab, label: 'Transactions', icon: History }
+    { id: 'transactions' as DashboardTab, label: 'Transactions', icon: History },
+    { id: 'defi' as DashboardTab, label: 'DeFi', icon: Activity },
+    { id: 'tax' as DashboardTab, label: 'Tax', icon: FileText },
+    { id: 'risk' as DashboardTab, label: 'Risk', icon: Shield }
   ];
 
   // Show welcome screen when wallet is not connected
@@ -117,6 +123,15 @@ const Dashboard: React.FC = () => {
       
       case 'transactions':
         return <TransactionHistory />;
+      
+      case 'defi':
+        return <DeFiProtocols />;
+      
+      case 'tax':
+        return <TaxReporting />;
+      
+      case 'risk':
+        return <RiskAssessment />;
       
       default:
         return null;
