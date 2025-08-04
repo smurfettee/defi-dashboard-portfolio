@@ -71,6 +71,18 @@ export const formatPercentage = (value: number): string => {
 };
 
 /**
+ * Format currency value with proper formatting
+ */
+export const formatCurrency = (value: number, currency = 'USD'): string => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(value);
+};
+
+/**
  * Calculate percentage of total
  */
 export const calculatePercentage = (value: number, total: number): number => {

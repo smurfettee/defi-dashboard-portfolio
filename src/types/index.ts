@@ -132,3 +132,92 @@ export interface PaginationOptions {
   fromBlock?: bigint;
   toBlock?: bigint;
 }
+
+// Portfolio Analytics Types
+export type TimePeriod = '24h' | '7d' | '30d' | '90d' | '1y' | 'all';
+
+export interface PriceChange {
+  absolute: number;
+  percentage: number;
+  period: TimePeriod;
+}
+
+export interface HistoricalPrice {
+  timestamp: number;
+  price: number;
+  date: string;
+}
+
+export interface TokenPerformance {
+  token: Token;
+  priceChanges: {
+    '24h': PriceChange;
+    '7d': PriceChange;
+    '30d': PriceChange;
+  };
+  allocation: number; // Percentage of total portfolio
+  unrealizedGainLoss?: {
+    absolute: number;
+    percentage: number;
+  };
+  historicalPrices: HistoricalPrice[];
+}
+
+export interface PortfolioMetrics {
+  totalValue: number;
+  totalChange24h: PriceChange;
+  totalChange7d: PriceChange;
+  totalChange30d: PriceChange;
+  allTimeHigh?: {
+    value: number;
+    date: string;
+  };
+  allTimeLow?: {
+    value: number;
+    date: string;
+  };
+  numberOfTokens: number;
+  largestHoldingPercentage: number;
+  bestPerformer?: {
+    symbol: string;
+    change: PriceChange;
+  };
+  worstPerformer?: {
+    symbol: string;
+    change: PriceChange;
+  };
+}
+
+export interface ChartDataPoint {
+  timestamp: number;
+  date: string;
+  value: number;
+  tokens?: { [symbol: string]: number };
+}
+
+export interface PortfolioAnalytics {
+  metrics: PortfolioMetrics;
+  tokenPerformance: TokenPerformance[];
+  historicalData: ChartDataPoint[];
+  allocationData: {
+    symbol: string;
+    value: number;
+    percentage: number;
+    color?: string;
+  }[];
+  loading: boolean;
+  error?: string;
+  lastUpdated?: number;
+}
+
+export interface AnalyticsCacheData {
+  data: any;
+  timestamp: number;
+  expiry: number;
+}
+
+export interface CoinGeckoHistoricalResponse {
+  prices: [number, number][];
+  market_caps?: [number, number][];
+  total_volumes?: [number, number][];
+}

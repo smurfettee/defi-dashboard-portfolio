@@ -1,15 +1,26 @@
-import React from 'react';
-import { Wallet, AlertCircle } from 'lucide-react';
+import React, { useState } from 'react';
+import { Wallet, AlertCircle, Coins, History, TrendingUp } from 'lucide-react';
 import { useWallet } from '../contexts/WalletContext';
 import { usePortfolio } from '../hooks/usePortfolio';
 import PortfolioSummary from './PortfolioSummary';
 import TokenList from './TokenList';
 import TestnetInfo from './TestnetInfo';
 import TransactionHistory from './TransactionHistory';
+import { AnalyticsOverview } from './analytics';
+import clsx from 'clsx';
+
+type DashboardTab = 'overview' | 'analytics' | 'transactions';
 
 const Dashboard: React.FC = () => {
   const { isConnected, address } = useWallet();
   const portfolio = usePortfolio();
+  const [activeTab, setActiveTab] = useState<DashboardTab>('overview');
+
+  const tabs = [
+    { id: 'overview' as DashboardTab, label: 'Overview', icon: Coins },
+    { id: 'analytics' as DashboardTab, label: 'Analytics', icon: TrendingUp },
+    { id: 'transactions' as DashboardTab, label: 'Transactions', icon: History }
+  ];
 
   // Show welcome screen when wallet is not connected
   if (!isConnected || !address) {
@@ -77,30 +88,72 @@ const Dashboard: React.FC = () => {
     );
   }
 
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'overview':
+        return (
+          <div className="space-y-8">
+            {/* Portfolio Summary */}
+            <PortfolioSummary
+              totalValue={portfolio.totalValue}
+              ethBalance={portfolio.ethBalance}
+              ethBalanceFormatted={portfolio.ethBalanceFormatted}
+              ethUsdValue={portfolio.ethUsdValue}
+              loading={portfolio.loading}
+              onRefresh={portfolio.refresh}
+            />
+
+            {/* Token Holdings */}
+            <TokenList
+              tokens={portfolio.tokens}
+              totalValue={portfolio.totalValue}
+              loading={portfolio.loading}
+            />
+          </div>
+        );
+      
+      case 'analytics':
+        return <AnalyticsOverview />;
+      
+      case 'transactions':
+        return <TransactionHistory />;
+      
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="space-y-8">
       {/* Testnet Information */}
       <TestnetInfo />
       
-      {/* Portfolio Summary */}
-      <PortfolioSummary
-        totalValue={portfolio.totalValue}
-        ethBalance={portfolio.ethBalance}
-        ethBalanceFormatted={portfolio.ethBalanceFormatted}
-        ethUsdValue={portfolio.ethUsdValue}
-        loading={portfolio.loading}
-        onRefresh={portfolio.refresh}
-      />
+      {/* Tab Navigation */}
+      <div className="border-b border-gray-200 dark:border-gray-700">
+        <nav className="-mb-px flex space-x-8">
+          {tabs.map((tab) => {
+            const Icon = tab.icon;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={clsx(
+                  'flex items-center gap-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors',
+                  activeTab === tab.id
+                    ? 'border-primary-500 text-primary-600 dark:text-primary-400'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
+                )}
+              >
+                <Icon className="w-5 h-5" />
+                {tab.label}
+              </button>
+            );
+          })}
+        </nav>
+      </div>
 
-      {/* Token Holdings */}
-      <TokenList
-        tokens={portfolio.tokens}
-        totalValue={portfolio.totalValue}
-        loading={portfolio.loading}
-      />
-
-      {/* Transaction History */}
-      <TransactionHistory />
+      {/* Tab Content */}
+      {renderTabContent()}
     </div>
   );
 };
